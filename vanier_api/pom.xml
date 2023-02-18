@@ -20,17 +20,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>ca.vanier</groupId>
-			<artifactId>course_lib</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>ca.vanier</groupId>
-			<artifactId>student_lib</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>ca.vanier</groupId>
-			<artifactId>teacher_lib</artifactId>
+			<artifactId>vanierapi_lib</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>

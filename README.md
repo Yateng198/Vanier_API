@@ -23,6 +23,8 @@ For assign / change the teacher, this course will added into teaching list, if a
 In my demo, the course id 17 (Computer Security) is already full, 30 students, if you try to register anyone else, error msg will shown. You can also try to add student to another course to test this function. Else, if student already enrolled, error msg will shown as well.<br />
 
 !!!IMPORTANT!!!<br />
-When you need to indicate teacher Teaching list or course enrolled list, make sure indicate the course name in this format: "Course Name: courseName".<br />
+When you need to indicate teacher Teaching list or course enrolled list, make sure indicate the course name in this format: <br />
+"Course Name: courseName".<br />
+<br />
 GitHub: https://github.com/Yateng198/Vanier_API
 

@@ -46,8 +46,9 @@ public class StudentServiceImpl implements StudentService{
                 if (existingCourse == null) {
                     // If the course doesn't exist in the database, clear the student's courses enrolled (ignored the wrong user input) list
                     // and save the updated student to the database
-                    newStudentCoursesEnrolled.clear();
-                    studentRepository.save(student);
+                    throw new RuntimeException("We don't have the Course: "+ courseName +", Check you course enrolled list and try again please!");
+                    // newStudentCoursesEnrolled.clear();
+                    // studentRepository.save(student);
                 } else {
                     // If the course already exists in the database, add the student to the course's enrolled list
                     studentRepository.save(student);

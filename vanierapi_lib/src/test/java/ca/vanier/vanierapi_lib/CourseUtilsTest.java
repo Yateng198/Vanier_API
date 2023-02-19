@@ -1,5 +1,7 @@
 package ca.vanier.vanierapi_lib;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +38,7 @@ public class CourseUtilsTest {
     public void testRegisterStudentToCourseMoreThan30() {
         Course course = new Course();
         List<Student> studentList = new ArrayList<>();
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 30; i++) { // Add 30 students to the course
             studentList.add(new Student());
         }
         Teacher teacher = new Teacher();
@@ -44,9 +46,34 @@ public class CourseUtilsTest {
         course.setCourseName("WebServices");
         course.setTeacher(teacher);
         course.setStudents(studentList);
-        String str = "We are sorry, this course is already full for this session, please try again later!";
-        assert str.equals(CourseUtils.registerStudentToCourse(new Student(), course));
+
+        // Create a new student object that is not already enrolled in the course
+        Student student = new Student();
+        List<String> coursesEnrolled = new ArrayList<>();
+        coursesEnrolled.add("Course Name: DataBase");
+        student.setCoursesEnrolled(coursesEnrolled);
+
+        String expectedMessage = "We are sorry, this course is already full for this session, please try again later!";
+        String actualMessage = CourseUtils.registerStudentToCourse(student, course);
+        assertEquals(expectedMessage, actualMessage);
     }
+
+    // public void testRegisterStudentToCourseMoreThan30() {
+    // Course course = new Course();
+    // List<Student> studentList = new ArrayList<>();
+    // for (int i = 0; i < 30; i++) {
+    // studentList.add(new Student());
+    // }
+    // Teacher teacher = new Teacher();
+    // course.setId((long) 1001);
+    // course.setCourseName("WebServices");
+    // course.setTeacher(teacher);
+    // course.setStudents(studentList);
+    // Student student = new Student();
+    // String str = "We are sorry, this course is already full for this session,
+    // please try again later!";
+    // assert str.equals(CourseUtils.registerStudentToCourse(student, course));
+    // }
 
     // Testing register a student who is already enrolled to a course
     @Test
@@ -93,7 +120,8 @@ public class CourseUtilsTest {
         for (int i = 0; i < 20; i++) {
             studentList.add(new Student());
         }
-        Student student = new Student((long) 1001, "Annabelle", "Geng", "Annag@email.com", new ArrayList<>(Arrays.asList("Course Name: WebServices")));
+        Student student = new Student((long) 1001, "Annabelle", "Geng", "Annag@email.com",
+                new ArrayList<>(Arrays.asList("Course Name: WebServices")));
         studentList.add(student);
         Teacher teacher = new Teacher();
         course.setId((long) 1001);
@@ -106,6 +134,7 @@ public class CourseUtilsTest {
                 + " successfully!";
         assert str.equals(CourseUtils.removeStudentFromCourse(student, course));
     }
+
     // Testing to remove a student who is not enrolled yet from a course
     @Test
     public void testRemoveStudentFromCourseNotContains() {
@@ -119,7 +148,8 @@ public class CourseUtilsTest {
         course.setCourseName("WebServices");
         course.setTeacher(teacher);
         course.setStudents(studentList);
-        Student student = new Student((long) 1001, "Annabelle", "Geng", "Annag@email.com", new ArrayList<>(Arrays.asList("Course Name: WebServices")));
+        Student student = new Student((long) 1001, "Annabelle", "Geng", "Annag@email.com",
+                new ArrayList<>(Arrays.asList("Course Name: WebServices")));
         String str = "Sorry, " + student.getFName() + " is not enrolled in course " + course.getCourseName() + " yet!";
         assert str.equals(CourseUtils.removeStudentFromCourse(student, course));
     }

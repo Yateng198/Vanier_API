@@ -37,12 +37,18 @@ public class CourseServiceImpl implements CourseService {
         if (existingCourse != null) {
             throw new RuntimeException("Course already exists, check your input and try again please!");
         }
+        // Check if teacher is assigned while added the new course
+        Teacher thisTeacher = course.getTeacher();
+        if (thisTeacher == null || thisTeacher.getId() == null) {
+            throw new RuntimeException("We are sorry, you must assign an existed teacher for the New Course!");
+        }
 
         // Check if teacher is null or not existing
         Teacher teacher = teacherRepository.findById(course.getTeacher().getId()).get();
         if (teacher == null) {
             throw new RuntimeException("Complete the Teacher information with an existing teacher please!");
-        } else if (teacher.getId() == null) {
+        } else if (teacher.getId() == null || teacher.getFName() == null || teacher.getLName() == null
+                || teacher.getEmail() == null) {
             throw new RuntimeException("Complete the Teacher information with an existing teacher please!");
         } else if (teacher.getId() != null) {
             Optional<Teacher> existingTeacher = teacherRepository.findById(teacher.getId());
@@ -50,7 +56,6 @@ public class CourseServiceImpl implements CourseService {
                 throw new RuntimeException("Complete the Teacher information with an existing teacher please!");
             }
         }
-
         // Add course information into Teacher teaching courses list while adding a new
         // course
         List<String> coursesTeaching = teacher.getCoursesTeaching();
@@ -59,21 +64,17 @@ public class CourseServiceImpl implements CourseService {
         }
         coursesTeaching.add("Course Name: " + course.getCourseName());
         teacher.setCoursesTeaching(coursesTeaching);
-        teacherRepository.save(teacher);
-        course.setTeacher(teacher);
+        Teacher updatedTeacher = teacherRepository.save(teacher);
 
         // Iterate through students and add course to their coursesEnrolled list
         List<Student> students = course.getStudents();
         if (students != null) {
             List<Student> studentsDB = new ArrayList<>();
-            // for(Student stu: students){
-            //     if(stu.getId() == null){
-            //         throw new RuntimeException("Complete the Student information with an existing Student please!");
-            //     }
-            for(Student stu: students){
+            for (Student stu : students) {
                 Long studentId = stu.getId();
-                if(studentId == null || !studentRepository.findById(studentId).isPresent()){
-                    throw new RuntimeException("Invalid Student ID: " + studentId + ", Complete the Student information with an existing Student please!");
+                if (studentId == null || !studentRepository.findById(studentId).isPresent()) {
+                    throw new RuntimeException("Invalid Student ID: " + studentId
+                            + ", Complete the Student information with an existing Student please!");
                 }
                 Student studentInDB = studentRepository.findById(stu.getId()).get();
                 studentsDB.add(studentInDB);
@@ -87,10 +88,15 @@ public class CourseServiceImpl implements CourseService {
                 student.setCoursesEnrolled(coursesEnrolled);
                 studentRepository.save(student);
             }
-            course.setStudents(studentsDB);
-        }
 
-        return courseRepository.save(course);
+            course.setStudents(studentsDB);
+            course.setTeacher(updatedTeacher);
+            
+            
+        }
+        Course savedCourse = courseRepository.save(course);
+        savedCourse.setTeacher(updatedTeacher);
+        return savedCourse;
     }
 
     @Override
@@ -175,7 +181,8 @@ public class CourseServiceImpl implements CourseService {
                 }
             }
 
-            // Add course information into Teacher teaching courses list if the teaching list is not contain this course name
+            // Add course information into Teacher teaching courses list if the teaching
+            // list is not contain this course name
             List<String> coursesTeaching = teacher.getCoursesTeaching();
             if (coursesTeaching == null) {
                 coursesTeaching = new ArrayList<>();
@@ -184,12 +191,13 @@ public class CourseServiceImpl implements CourseService {
             if (!coursesTeaching.contains(courseName)) {
                 coursesTeaching.add(courseName);
             }
-            if(coursesTeaching.contains(oldCourseName)){
+            if (coursesTeaching.contains(oldCourseName)) {
                 coursesTeaching.remove(oldCourseName);
             }
             teacher.setCoursesTeaching(coursesTeaching);
             teacherRepository.save(teacher);
-            // Iterate through students and add course to their coursesEnrolled list if they dont have this course name yet
+            // Iterate through students and add course to their coursesEnrolled list if they
+            // dont have this course name yet
             List<Student> students = courseDB.getStudents();
             if (students != null) {
                 for (Student student : students) {
@@ -200,7 +208,7 @@ public class CourseServiceImpl implements CourseService {
                     if (!coursesEnrolled.contains(courseName)) {
                         coursesEnrolled.add(courseName);
                     }
-                    if(coursesEnrolled.contains(oldCourseName)){
+                    if (coursesEnrolled.contains(oldCourseName)) {
                         coursesTeaching.remove(oldCourseName);
                     }
                     student.setCoursesEnrolled(coursesEnrolled);

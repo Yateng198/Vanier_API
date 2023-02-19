@@ -22,13 +22,13 @@ public class CourseUtils {
         } else {
             coursesEnrolledCopy = new ArrayList<>(student.getCoursesEnrolled());
         }
-        // Check if the course is already full
-        if (studentsCopy.size() >= 30) {
-            return "We are sorry, this course is already full for this session, please try again later!";
-        }
         // Check if the student is already enrolled in the course
         if (studentsCopy.contains(student) || coursesEnrolledCopy.contains("Course Name: " + course.getCourseName())) {
             return "The student: " + student.getFName() + " is already enrolled with course " + course.getCourseName();
+        }
+        // Check if the course is already full
+        if (studentsCopy.size() >= 30) {
+            return "We are sorry, this course is already full for this session, please try again later!";
         }
         //Add course name into course enrolled list for this student, and add this student into the students list of this course
         studentsCopy.add(student);

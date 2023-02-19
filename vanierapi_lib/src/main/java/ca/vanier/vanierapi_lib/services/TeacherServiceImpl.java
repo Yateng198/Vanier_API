@@ -27,9 +27,8 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public Teacher saveTeacher(Teacher teacher) {
         List<String> newTeachercoursesTeaching = teacher.getCoursesTeaching();
-
         if (newTeachercoursesTeaching == null || newTeachercoursesTeaching.isEmpty()) {
-            // If the teacher doesn't have any courses, just add into database
+            // If the teacher doesn't have any courses teaching information, just add into database
             return teacherRepository.save(teacher);
         } else {
             // Iterate through the teacher's course list and check if each course already
@@ -41,20 +40,17 @@ public class TeacherServiceImpl implements TeacherService {
 
                 // Check if the course already exists in the database
                 Course existingCourse = courseRepository.findByCourseName(courseName);
-
+                teacherRepository.save(teacher);
                 if (existingCourse == null) {
                     // If the course doesn't exist in the database, create a new course and add it
                     // to the teacher's courses teaching list
                     Course newCourse = new Course();
-                    teacherRepository.save(teacher);
                     newCourse.setCourseName(courseName);
                     newCourse.setTeacher(teacher);
                     courseRepository.save(newCourse);
-                    teacher.getCoursesTeaching().add(course);
                 } else {
                     // If the course already exists in the database, update its teacher and add it
                     // to the teacher's courses teaching list
-                    teacherRepository.save(teacher);
                     existingCourse.setTeacher(teacher);
                     courseRepository.save(existingCourse);
                     teacher.getCoursesTeaching().add(course);
